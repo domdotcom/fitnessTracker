@@ -1,4 +1,4 @@
-var db = require("../models");
+var db = require("./models");
 
 module.exports = function (app) {
   app.get("/api/workouts", function (req, res) {
@@ -21,7 +21,6 @@ module.exports = function (app) {
   });
 
   app.get("/api/workouts/range", (req, res) => {
-    console.log("range");
     db.Workout.find()
       .then((dbWorkout) => {
         res.json(dbWorkout);
