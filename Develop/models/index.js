@@ -1,1 +1,1 @@
-exports.Workout = require("./workout-model");
+exports.Workout = require("./workoutModel");
