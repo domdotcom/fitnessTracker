@@ -1,43 +1,53 @@
-var db = require("../models");
+const router = require("express").Router();
+const db = require("../models");
 
-module.exports = function (app) {
-  app.get("/api/workouts", function (req, res) {
-    db.Workout.find({})
-      .then(function (dbWorkout) {
-        res.json(dbWorkout);
-      })
-      .catch((err) => res.json(err));
-  });
+//console.log("Workout = ", db.Workout);
 
-  app.put("/api/workouts/:id", function (req, res) {
-    console.log(req.body);
-    db.Workout.findOneAndUpdate(
-      { _id: req.params.id },
-      { $push: { exercises: req.body } },
-      { new: true }
-    ).then(function (dbWorkout) {
-      res.json(dbWorkout);
-    });
-  });
+router.get("/api/workouts", (req, res) => {
+    db.Workout.find().then(data => {
+        console.log("/api/workouts get route = ", JSON.stringify(data));
+        res.json(data);
+    })
+});
 
-  app.get("/api/workouts/range", (req, res) => {
-    db.Workout.find().limit(7)
-      .then((dbWorkout) => {
-        res.json(dbWorkout);
-      })
-      .catch((err) => {
-        res.json(err);
-      });
-  });
+router.put("/api/workouts/:id", (req, res) => {
+    console.log("The req.body = ", )
+    db.Workout.update({_id: req.params.id}, {$push: {exercises: req.body}})
+        .then(data => {
+            console.log("/api/workouts/:id put route = ", JSON.stringify(data));
+            res.json(data)
+        })
+        .catch(err => {
+            if(err){
+                res.status(500).send(err)
+            }
+        })
+});
 
-  app.post("/api/workouts", (req, res) => {
-    console.log(req.body);
+router.post("/api/workouts", (req, res) => {
     db.Workout.create(req.body)
-      .then((dbExercise) => {
-        res.json(dbExercise);
-      })
-      .catch((err) => {
-        res.json(err);
-      });
-  });
-};
+        .then(data => {
+            console.log("/api/workouts post route = ", JSON.stringify(data));
+            res.json(data)
+        })
+        .catch(err => {
+            if(err){
+                res.status(500).send(err)
+            }
+        })
+});
+
+router.get("/api/workouts/range", (req, res) => {
+    db.Workout.find({}).limit(7)    
+        .then(data => {
+            console.log("/api/workouts/range get route = ", JSON.stringify(data));
+            res.json(data)
+        })
+        .catch(err => {
+            if(err){
+                res.status(500).send(err)
+            }
+        })
+});
+
+module.exports = router;
